@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .draggableContainer,
+        .droppableContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box,
+        .droppable {
+            background-color: #c0d8c0;
+            height: 30px;
+            width: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            position: relative;
+            z-index: 2;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            border: 2px solid white;
+        }
+
+        .box:hover,
+        .droppable:hover {
+            background-color: #c1cd97;
+        }
+
+        .droppable {
+            background-color: #e1efca;
+        }
+
+        .draggableFormat {
+            font-weight: bold;
+            color: green;
+            border: 5px solid white;
+        }
+
+        #scoreSection {
+            z-index: 1;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: black;
+            background-color: #cdeecd;
+            padding: 20px;
+            font-weight: bolder;
+            border: 2px solid black;
+            border-radius: 10px;
+
+        }
+
+        #remarksDiv {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f7b5;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bolder;
+            border: 2px solid black;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="draggableContainer">
+            <div class="box" draggable="true" id="drag1">Apple</div>
+            <div class="box" draggable="true" id="drag2">Banana</div>
+            <div class="box" draggable="true" id="drag3">Cat</div>
+            <div class="box" draggable="true" id="drag4">Dog</div>
+            <div class="box" draggable="true" id="drag5">Egg</div>
+            <div class="box" draggable="true" id="drag5">Fish</div>
+            <div class="box" draggable="true" id="drag6">Goat</div>
+            <div class="box" draggable="true" id="drag7">Hand</div>
+            <div class="box" draggable="true" id="drag8">Ice</div>
+            <div class="box" draggable="true" id="drag9">Jam</div>
+        </div>
+
+        <div class="droppableContainer">
+            <div class="droppable" id="drop1" data-draggable-id="drop1">A</div>
+            <div class="droppable" id="drop2" data-draggable-id="drop2">B</div>
+            <div class="droppable" id="drop3" data-draggable-id="drop3">C</div>
+            <div class="droppable" id="drop4" data-draggable-id="drop4">D</div>
+            <div class="droppable" id="drop5" data-draggable-id="drop5">E</div>
+            <div class="droppable" id="drop5" data-draggable-id="drop5">F</div>
+            <div class="droppable" id="drop5" data-draggable-id="drop5">G</div>
+            <div class="droppable" id="drop5" data-draggable-id="drop5">H</div>
+            <div class="droppable" id="drop5" data-draggable-id="drop5">I</div>
+            <div class="droppable" id="drop5" data-draggable-id="drop5">J</div>
+
+        </div>
+    </div>
+
+    <div id="remarksDiv"></div>
+    <div id="scoreSection">Score: <span id="scoreValue">0</span></div>
+
+    <script>
+        const draggableElement = document.querySelectorAll('.box');
+        const droppableElement = document.querySelectorAll('.droppable');
+        const remarksDiv = document.getElementById('remarksDiv');
+        let score = 0;
+
+        draggableElement.forEach(element => {
+            element.addEventListener('dragstart', (drgStrt) => {
+                drgStrt.dataTransfer.setData('text', drgStrt.target.id);
+                drgStrt.currentTarget.classList.add('draggableFormat');
+            });
+
+            element.addEventListener('dragend', (drgendEvt) => {
+                drgendEvt.currentTarget.classList.remove('draggableFormat');
+            });
+        });
+
+        droppableElement.forEach(element => {
+            element.addEventListener('dragover', (dragOver) => {
+                dragOver.preventDefault();
+            });
+
+            element.addEventListener('drop', (dropEvt) => {
+                dropEvt.preventDefault();
+                const droppedElementId = dropEvt.dataTransfer.getData('text');
+                const dropZoneId = dropEvt.target.getAttribute('data-draggable-id');
+                const droppedElement = document.getElementById(droppedElementId);
+
+                dropEvt.target.appendChild(droppedElement);
+
+                if (dropZoneId === droppedElementId.replace('drag', 'drop')) {
+                    score++;
+                    remarksDiv.innerText = 'Correct';
+                    scoreSection.innerText = `Score: ${score}`;
+                } else {
+                    remarksDiv.innerText = 'Incorrect';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
